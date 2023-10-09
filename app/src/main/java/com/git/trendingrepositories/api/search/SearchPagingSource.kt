@@ -34,8 +34,8 @@ class SearchPagingSource(
                 service.getSearchRepositories(
                     search = searchCondition.toLocalDateString(),
                     page = page,
-                    order = sortOrder.value,
-                    sort = resultsOrder.value
+                    sort = sortOrder.value,
+                    order = resultsOrder.value
                 )
             val body = response.body()
             val repositories = body?.items ?: listOf()
@@ -45,6 +45,13 @@ class SearchPagingSource(
                 prevKey = null,
                 nextKey = null
             )
+
+//            TODO Use with github api key to avoid 403 error
+//            LoadResult.Page(
+//                data = repositories,
+//                prevKey = null,
+//                nextKey = if (body?.incompleteResults == false) page + 1 else null
+//            )
         } catch (exception: IOException) {
             LoadResult.Error(exception)
         } catch (exception: HttpException) {
