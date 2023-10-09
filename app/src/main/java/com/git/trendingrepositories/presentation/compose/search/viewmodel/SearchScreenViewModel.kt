@@ -8,10 +8,12 @@ import com.git.trendingrepositories.api.search.model.Repository
 import com.git.trendingrepositories.domain.model.enums.SortPeriod
 import com.git.trendingrepositories.domain.usecase.search.GetRepositoriesUseCase
 import com.git.trendingrepositories.presentation.compose.search.model.UiSortPeriod
+import com.git.trendingrepositories.presentation.compose.search.model.UiSortPeriod.Companion.getNext
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,12 +29,30 @@ class SearchScreenViewModel @Inject constructor(private val repositoriesUseCase:
 
     val viewState = _viewState.asStateFlow()
 
+    //TODO Handle network exceptions to represent on UI
     private fun getData(period: SortPeriod) = repositoriesUseCase.getRepositoriesFlow(period)
         .cachedIn(viewModelScope)
+
+    fun handleAction(actions: SearchActions) {
+        when (actions) {
+            SearchActions.ChangePeriod -> {
+                val period = _viewState.value.sortPeriod.getNext()
+                val response = getData(period.sortPeriod)
+
+                _viewState.update { state ->
+                    state.copy(
+                        repositories = response,
+                        screenTitle = period.title,
+                        sortPeriod = period
+                    )
+                }
+            }
+        }
+    }
 }
 
 sealed class SearchActions {
-
+    object ChangePeriod : SearchActions()
 }
 
 data class SearchState(

@@ -3,5 +3,6 @@
     <string name="last_day">Last Day</string>
     <string name="last_week">Last Week</string>
     <string name="last_month">Last Month</string>
-    <string name="git_search">Git Search</string>
+    <string name="trending">Trending</string>
+    <string name="empty_data_or_load_error">Empty data or load error</string>
 </resources>
