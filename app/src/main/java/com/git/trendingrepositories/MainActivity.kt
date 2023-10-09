@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.Surface
+import com.git.trendingrepositories.presentation.compose.GitAppHost
 import com.git.trendingrepositories.presentation.compose.theme.GitAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -15,6 +16,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             GitAppTheme {
                 Surface {
+                    GitAppHost()
                 }
             }
         }
