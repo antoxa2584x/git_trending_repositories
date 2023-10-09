@@ -2,7 +2,7 @@ package com.git.trendingrepositories.di
 
 import com.git.trendingrepositories.api.search.SearchRepository
 import com.git.trendingrepositories.api.search.SearchService
-import com.git.trendingrepositories.domain.ISearchRepository
+import com.git.trendingrepositories.domain.repository.ISearchRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
