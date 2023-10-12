@@ -33,7 +33,7 @@ fun SearchScreenItem(repo: Repository, onClick: () -> Unit) {
         ownerName = repo.owner.login,
         repoName = repo.name,
         avatarUrl = repo.owner.avatarUrl,
-        description = repo.description ?: "",
+        description = repo.getShortDescription(),
         starsCount = repo.stargazersCount,
         itemClick = onClick
     )
