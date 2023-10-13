@@ -1,6 +1,6 @@
-package com.git.trendingrepositories.api.search
+package com.git.trendingrepositories.data.remote.search
 
-import com.git.trendingrepositories.api.search.model.ApiRepositorySearchModel
+import com.git.trendingrepositories.data.remote.search.model.ApiRepositorySearchModel
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

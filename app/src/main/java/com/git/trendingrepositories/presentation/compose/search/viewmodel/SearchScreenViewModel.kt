@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.git.trendingrepositories.api.search.model.Repository
+import com.git.trendingrepositories.data.remote.search.model.Repository
 import com.git.trendingrepositories.domain.model.enums.SortPeriod
 import com.git.trendingrepositories.domain.usecase.search.GetRepositoriesUseCase
 import com.git.trendingrepositories.presentation.compose.search.model.UiSortPeriod

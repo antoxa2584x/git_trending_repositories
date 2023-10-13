@@ -1,8 +1,8 @@
-package com.git.trendingrepositories.api.search
+package com.git.trendingrepositories.data.remote.search
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
-import com.git.trendingrepositories.api.search.model.Repository
+import com.git.trendingrepositories.data.remote.search.model.Repository
 import com.git.trendingrepositories.domain.repository.ISearchRepository
 import com.git.trendingrepositories.domain.model.enums.ResultsOrder
 import com.git.trendingrepositories.domain.model.enums.SortOrder

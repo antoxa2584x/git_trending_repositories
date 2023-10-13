@@ -1,7 +1,6 @@
 package com.git.trendingrepositories.presentation.compose.search
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,19 +11,19 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.git.trendingrepositories.api.search.model.Repository
+import com.git.trendingrepositories.data.remote.search.model.Repository
 import com.git.trendingrepositories.presentation.compose.utils.AvatarImage
 
 @Composable
@@ -50,12 +49,12 @@ fun SearchScreenItem(
 ) {
     Surface(border = BorderStroke(1.dp, Color.DarkGray),
         shape = RoundedCornerShape(8.dp),
-        onClick = { itemClick.invoke() }) {
+        onClick = { itemClick() }) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .padding(8.dp)
+                .padding(16.dp)
         ) {
             AvatarImage(
                 url = avatarUrl,
@@ -94,10 +93,10 @@ fun SearchScreenItem(
                 )
                 Row(Modifier.padding(top = 8.dp)) {
                     val tint = Color.Gray
-                    Image(
-                        imageVector = Icons.Filled.Star,
-                        contentDescription = "",
-                        colorFilter = ColorFilter.tint(tint),
+                    Icon(
+                        tint = tint,
+                        imageVector = Icons.Outlined.Star,
+                        contentDescription = "DateRange",
                         modifier = Modifier
                             .width(12.dp)
                             .height(12.dp)

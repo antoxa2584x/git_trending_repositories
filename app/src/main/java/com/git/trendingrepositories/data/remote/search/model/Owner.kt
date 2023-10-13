@@ -1,4 +1,4 @@
-package com.git.trendingrepositories.api.search.model
+package com.git.trendingrepositories.data.remote.search.model
 
 import com.google.gson.annotations.SerializedName
 

@@ -1,7 +1,7 @@
 package com.git.trendingrepositories.di
 
 import android.content.Context
-import com.git.trendingrepositories.api.search.SearchService
+import com.git.trendingrepositories.data.remote.search.SearchService
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
@@ -9,12 +9,16 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.Cache
+import okhttp3.Interceptor
+import okhttp3.Interceptor.*
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 import javax.inject.Singleton
+
 
 @InstallIn(SingletonComponent::class)
 @Module
@@ -45,6 +49,14 @@ class NetworkModule {
     ): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
+            .addInterceptor(Interceptor { chain ->
+                val request: Request =
+                    chain.request().newBuilder().addHeader(
+                        "Authorization",
+                        "Bearer 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"
+                    ).build()
+                chain.proceed(request)
+            })
             .cache(cache)
             .build()
     }
