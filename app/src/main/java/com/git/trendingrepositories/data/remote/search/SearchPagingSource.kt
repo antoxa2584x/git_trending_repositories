@@ -2,7 +2,7 @@ package com.git.trendingrepositories.data.remote.search
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.git.trendingrepositories.data.remote.search.model.Repository
+import com.git.trendingrepositories.data.remote.search.model.RepositoryDto
 import com.git.trendingrepositories.domain.model.enums.ResultsOrder
 import com.git.trendingrepositories.domain.model.enums.SortOrder
 import com.git.trendingrepositories.domain.model.enums.SortPeriod
@@ -15,24 +15,24 @@ class SearchPagingSource(
     private val searchCondition: SortPeriod,
     private val sortOrder: SortOrder,
     private val resultsOrder: ResultsOrder
-) : PagingSource<Int, Repository>() {
+) : PagingSource<Int, RepositoryDto>() {
 
     companion object {
         private const val PAGE_INDEX = 0
     }
 
-    override fun getRefreshKey(state: PagingState<Int, Repository>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, RepositoryDto>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
             state.closestPageToPosition(anchorPosition)?.prevKey
         }
     }
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Repository> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, RepositoryDto> {
         val page = params.key ?: PAGE_INDEX
         return try {
             val response =
                 service.getSearchRepositories(
-                    search = searchCondition.toLocalDateString(),
+                    search = "created:>${searchCondition.toLocalDateString()}",
                     page = page,
                     sort = sortOrder.value,
                     order = resultsOrder.value

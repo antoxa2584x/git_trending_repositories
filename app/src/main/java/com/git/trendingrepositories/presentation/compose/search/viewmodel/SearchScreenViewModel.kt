@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.git.trendingrepositories.data.remote.search.model.Repository
+import androidx.paging.map
+import com.git.trendingrepositories.data.mappers.toRepository
 import com.git.trendingrepositories.domain.model.enums.SortPeriod
+import com.git.trendingrepositories.domain.model.search.Repository
 import com.git.trendingrepositories.domain.usecase.search.GetRepositoriesUseCase
 import com.git.trendingrepositories.presentation.compose.search.model.UiSortPeriod
 import com.git.trendingrepositories.presentation.compose.search.model.UiSortPeriod.Companion.getNext
@@ -13,11 +15,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
-class SearchScreenViewModel @Inject constructor(private val repositoriesUseCase: GetRepositoriesUseCase) :
+class SearchScreenViewModel @Inject constructor(
+    private val repositoriesUseCase: GetRepositoriesUseCase
+) :
     ViewModel() {
     private val _viewState = MutableStateFlow(
         SearchState(
@@ -29,8 +34,12 @@ class SearchScreenViewModel @Inject constructor(private val repositoriesUseCase:
 
     val viewState = _viewState.asStateFlow()
 
-    //TODO Handle network exceptions to represent on UI
-    private fun getData(period: SortPeriod) = repositoriesUseCase.getRepositoriesFlow(period)
+    private fun getData(period: SortPeriod):Flow<PagingData<Repository>> = repositoriesUseCase.getRepositoriesLocalFlow(period)
+        .map { pagingData ->
+            pagingData.map {
+                it.toRepository()
+            }
+        }
         .cachedIn(viewModelScope)
 
     fun handleAction(actions: SearchActions) {

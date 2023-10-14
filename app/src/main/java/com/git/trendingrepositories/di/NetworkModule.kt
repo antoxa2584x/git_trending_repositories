@@ -53,7 +53,7 @@ class NetworkModule {
                 val request: Request =
                     chain.request().newBuilder().addHeader(
                         "Authorization",
-                        "Bearer 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"
+                        "Bearer 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"
                     ).build()
                 chain.proceed(request)
             })
@@ -69,7 +69,8 @@ class NetworkModule {
             .client(client)
             .addConverterFactory(
                 GsonConverterFactory.create(
-                    GsonBuilder().serializeNulls().create()
+                    GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+                        .serializeNulls().create()
                 )
             )
             .build()

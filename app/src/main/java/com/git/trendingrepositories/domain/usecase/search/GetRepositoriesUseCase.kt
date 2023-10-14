@@ -11,4 +11,7 @@ class GetRepositoriesUseCase @Inject constructor(private val repository: ISearch
     //TODO Handle error
     fun getRepositoriesFlow(sort: SortPeriod) =
         repository.getSearchResult(sort, SortOrder.STARS, ResultsOrder.DESC).flow
+
+    fun getRepositoriesLocalFlow(sort: SortPeriod) =
+        repository.getLocalSearchResult(sort, SortOrder.STARS, ResultsOrder.DESC).flow
 }

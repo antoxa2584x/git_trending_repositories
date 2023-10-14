@@ -24,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,7 +46,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.git.trendingrepositories.R
-import com.git.trendingrepositories.data.remote.search.model.Repository
+import com.git.trendingrepositories.domain.model.search.Repository
 import com.git.trendingrepositories.presentation.compose.search.viewmodel.SearchActions
 import com.git.trendingrepositories.presentation.compose.search.viewmodel.SearchScreenViewModel
 import com.git.trendingrepositories.presentation.compose.search.viewmodel.SearchState
@@ -173,8 +174,11 @@ private fun SearchList(
                 "${repository?.id}${index}"
             }) { index ->
                 val repository = data[index]
-                SearchScreenItem(repo = repository ?: Repository()) {
-                    onReposClick(repository ?: Repository())
+
+                repository?.let {
+                    SearchScreenItem(repo = it) {
+                        onReposClick(repository)
+                    }
                 }
             }
             item {

@@ -36,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -45,9 +46,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.git.trendingrepositories.R
-import com.git.trendingrepositories.data.remote.search.model.Repository
+import com.git.trendingrepositories.domain.model.search.Repository
 import com.git.trendingrepositories.presentation.compose.details.viewmodel.DetailsActions
 import com.git.trendingrepositories.presentation.compose.details.viewmodel.DetailsScreenViewModel
+import com.git.trendingrepositories.presentation.compose.details.viewmodel.DetailsScreensState
 import com.git.trendingrepositories.presentation.compose.theme.SurfaceColor
 import com.git.trendingrepositories.presentation.compose.utils.AvatarImage
 
@@ -56,54 +58,70 @@ import com.git.trendingrepositories.presentation.compose.utils.AvatarImage
 @Composable
 fun DetailsScreen(
     viewModel: DetailsScreenViewModel = hiltViewModel(),
-    repository: Repository = Repository(),
+    repository: Repository? = null,
     onBackPressed: () -> Unit = {}
 ) {
     val uriHandler = LocalUriHandler.current
+
+    repository?.let {
+        viewModel.handleAction(DetailsActions.SetRepository(it))
+    }
+
+    DetailsScreen(uriHandler, viewModel, onBackPressed)
+}
+
+@Composable
+fun DetailsScreen(
+    uriHandler: UriHandler, viewModel: DetailsScreenViewModel,
+    onBackPressed: () -> Unit = {}
+) {
     val state by viewModel.viewState.collectAsStateWithLifecycle()
 
-    DetailsScreenContent(repository = repository,
-        isFavorite = state.isFavorite,
+    DetailsScreenContent(state,
         onBackPressed = onBackPressed,
         markAsFavorite = {
-            viewModel.handleAction(DetailsActions.MarkAsFavorite)
+            viewModel.handleAction(DetailsActions.MarkAsFavorite(state.isLiked))
         },
         onWebPressed = {
             uriHandler.openUri(it ?: "")
         })
 }
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DetailsScreenContent(
-    repository: Repository,
-    isFavorite: Boolean,
+    state: DetailsScreensState,
     onBackPressed: () -> Unit,
     markAsFavorite: () -> Unit,
     onWebPressed: (url: String?) -> Unit
 ) {
-    Scaffold(topBar = {
-        TopAppBar(colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Black),
-            title = {
-                Text(text = stringResource(R.string.repository))
-            },
-            navigationIcon = {
-                IconButton(onClick = { onBackPressed() }) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack, contentDescription = "Back"
-                    )
-                }
-            },
-            actions = {
-                IconButton(onClick = { onWebPressed(repository.htmlUrl) }) {
-                    Icon(
-                        tint = Color.Blue,
-                        imageVector = ImageVector.vectorResource(R.drawable.baseline_explore_24),
-                        contentDescription = "Web"
-                    )
-                }
-            })
-    },
+    val repository = state.repository ?: return
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Black),
+                title = {
+                    Text(text = stringResource(R.string.repository))
+                },
+                navigationIcon = {
+                    IconButton(onClick = { onBackPressed() }) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack, contentDescription = "Back"
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { onWebPressed(repository.htmlUrl) }) {
+                        Icon(
+                            tint = Color.Blue,
+                            imageVector = ImageVector.vectorResource(R.drawable.baseline_explore_24),
+                            contentDescription = "Web"
+                        )
+                    }
+                })
+        },
         content = { DetailsScreenContent(repository, it) },
         floatingActionButtonPosition = FabPosition.End,
         floatingActionButton = {
@@ -111,9 +129,9 @@ private fun DetailsScreenContent(
                 contentColor = Color.White,
                 onClick = { markAsFavorite() },
             ) {
-                Crossfade(targetState = isFavorite, label = "") { isFavorite ->
+                Crossfade(targetState = state.isLiked, label = "") { isLiked ->
                     Icon(
-                        imageVector = ImageVector.vectorResource(if (isFavorite) R.drawable.baseline_favorite_24 else R.drawable.baseline_favorite_border_24),
+                        imageVector = ImageVector.vectorResource(if (isLiked) R.drawable.baseline_favorite_24 else R.drawable.baseline_favorite_border_24),
                         contentDescription = "Mark Star"
                     )
                 }
@@ -136,7 +154,7 @@ fun DetailsScreenContent(repository: Repository, paddingValues: PaddingValues) {
         ) {
             AboutBlock(repository)
 
-            if (repository.description.isNullOrBlank().not())
+            if (repository.description.isEmpty().not())
                 Text(
                     text = repository.getLongDescription(),
                     modifier = Modifier
@@ -211,7 +229,7 @@ private fun AboutBlock(repository: Repository) {
             )
         }
 
-        if (repository.language.isNullOrBlank().not()) Row {
+        if (repository.language.isEmpty().not()) Row {
             Text(
                 text = "Language: ",
                 modifier = Modifier
@@ -220,7 +238,7 @@ private fun AboutBlock(repository: Repository) {
                 fontSize = 14.sp
             )
             Text(
-                text = repository.language ?: "",
+                text = repository.language,
                 modifier = Modifier
                     .wrapContentSize()
                     .padding(top = 4.dp),
