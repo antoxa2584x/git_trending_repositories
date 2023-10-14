@@ -261,6 +261,7 @@ private fun CountsRow(stars: Int, forks: Int) {
             imageVector = Icons.Filled.Star,
             contentDescription = "star",
             Modifier
+                .padding(end = 4.dp)
                 .width(12.dp)
                 .height(12.dp)
                 .align(CenterVertically),
@@ -278,7 +279,7 @@ private fun CountsRow(stars: Int, forks: Int) {
             imageVector = ImageVector.vectorResource(R.drawable.git_fork),
             contentDescription = "star",
             Modifier
-                .padding(start = 24.dp)
+                .padding(start = 24.dp, end = 4.dp)
                 .width(12.dp)
                 .height(12.dp)
                 .align(CenterVertically),

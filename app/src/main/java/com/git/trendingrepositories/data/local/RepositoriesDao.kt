@@ -28,8 +28,9 @@ interface RepositoriesDao {
     @Query("SELECT * FROM likedentity WHERE repositoryId = :id ")
     suspend fun isLiked(id: Int): LikedEntity?
 
-    @Query("SELECT * FROM likedentity")
-    fun getLiked(): Flow<List<LikedEntity>>
+    @Transaction
+    @Query("SELECT * FROM likedentity JOIN repositoryentity ON id = repositoryId WHERE isLiked = 1 ORDER BY stargazersCount DESC")
+    fun getSortedLiked(): PagingSource<Int, RepositoryWithLike>
 
     @Transaction
     @Query("SELECT * FROM repositoryentity WHERE dateCreated > :date ORDER BY stargazersCount DESC")

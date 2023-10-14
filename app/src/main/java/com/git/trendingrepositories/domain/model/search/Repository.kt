@@ -31,7 +31,7 @@ data class Repository(
         return "$trimmedText${if (descriptionLength > MAX_LONG_TEXT_LENGTH) "…" else ""}"
     }
 
-    fun getSimpleDate() = DateTime(dateCreated).toString()
+    fun getSimpleDate() = DateTime(dateCreated).toString("dd-MM-yyyy")
 
     companion object {
         const val MAX_TEXT_LENGTH = 100

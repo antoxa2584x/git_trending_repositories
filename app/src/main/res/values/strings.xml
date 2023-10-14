@@ -4,6 +4,7 @@
     <string name="last_week">Last Week</string>
     <string name="last_month">Last Month</string>
     <string name="trending">Trending</string>
+    <string name="saved">Saved</string>
     <string name="repository">Repository</string>
     <string name="stars">Stars</string>
     <string name="forks">Forks</string>

@@ -1,4 +1,4 @@
-package com.git.trendingrepositories.presentation.compose.search
+package com.git.trendingrepositories.presentation.compose.utils
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
@@ -26,11 +26,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.git.trendingrepositories.domain.model.search.Repository
-import com.git.trendingrepositories.presentation.compose.utils.AvatarImage
 
 @Composable
-fun SearchScreenItem(repo: Repository, onClick: () -> Unit) {
-    SearchScreenItem(
+fun RepositoryItem(repo: Repository, onClick: () -> Unit) {
+    RepositoryItem(
         ownerName = repo.owner.login,
         repoName = repo.name,
         avatarUrl = repo.owner.avatarUrl,
@@ -42,7 +41,7 @@ fun SearchScreenItem(repo: Repository, onClick: () -> Unit) {
 }
 
 @Composable
-fun SearchScreenItem(
+fun RepositoryItem(
     ownerName: String,
     repoName: String,
     avatarUrl: String,
@@ -51,7 +50,8 @@ fun SearchScreenItem(
     isLiked: Boolean,
     itemClick: () -> Unit
 ) {
-    Surface(border = BorderStroke(1.dp, Color.DarkGray),
+    Surface(
+        border = BorderStroke(1.dp, Color.DarkGray),
         shape = RoundedCornerShape(8.dp),
         onClick = { itemClick() }) {
         Box {
@@ -101,8 +101,9 @@ fun SearchScreenItem(
                         Icon(
                             tint = tint,
                             imageVector = Icons.Outlined.Star,
-                            contentDescription = "DateRange",
+                            contentDescription = "stars",
                             modifier = Modifier
+                                .padding(end = 4.dp)
                                 .width(12.dp)
                                 .height(12.dp)
                                 .align(Alignment.CenterVertically)

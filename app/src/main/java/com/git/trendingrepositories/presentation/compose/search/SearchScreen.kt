@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DateRange
@@ -24,7 +23,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,6 +48,7 @@ import com.git.trendingrepositories.domain.model.search.Repository
 import com.git.trendingrepositories.presentation.compose.search.viewmodel.SearchActions
 import com.git.trendingrepositories.presentation.compose.search.viewmodel.SearchScreenViewModel
 import com.git.trendingrepositories.presentation.compose.search.viewmodel.SearchState
+import com.git.trendingrepositories.presentation.compose.utils.RepositoryItem
 
 @Preview
 @Composable
@@ -60,11 +59,12 @@ fun SearchScreen(
 ) {
     val state by viewModel.viewState.collectAsStateWithLifecycle()
 
-    SearchScreen(state = state, onFilterChangeClick = {
-        viewModel.handleAction(actions = SearchActions.ChangePeriod)
-    }, onReposClick = {
-        onReposClick(it)
-    }, onFavoritesClick = onFavoritesClick
+    SearchScreen(state = state,
+        onFilterChangeClick = {
+            viewModel.handleAction(actions = SearchActions.ChangePeriod)
+        }, onReposClick = {
+            onReposClick(it)
+        }, onFavoritesClick = onFavoritesClick
     )
 }
 
@@ -156,15 +156,16 @@ private fun SearchScreenContent(
 private fun SearchList(
     data: LazyPagingItems<Repository>, onReposClick: (repo: Repository) -> Unit
 ) {
-    val state = rememberLazyListState()
     val isMoreLoading = data.loadState.append is LoadState.Loading
     val isError = data.loadState.append is LoadState.Error
+
+    if (data.itemCount == 0)
+        return
 
     Box {
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
-            state = state,
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
@@ -176,7 +177,7 @@ private fun SearchList(
                 val repository = data[index]
 
                 repository?.let {
-                    SearchScreenItem(repo = it) {
+                    RepositoryItem(repo = it) {
                         onReposClick(repository)
                     }
                 }
