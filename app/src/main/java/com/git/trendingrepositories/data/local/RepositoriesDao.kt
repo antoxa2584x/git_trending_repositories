@@ -11,7 +11,6 @@ import androidx.room.Upsert
 import com.git.trendingrepositories.data.local.model.LikedEntity
 import com.git.trendingrepositories.data.local.model.RepositoryEntity
 import com.git.trendingrepositories.data.local.model.RepositoryWithLike
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RepositoriesDao {
@@ -31,6 +30,10 @@ interface RepositoriesDao {
     @Transaction
     @Query("SELECT * FROM likedentity JOIN repositoryentity ON id = repositoryId WHERE isLiked = 1 ORDER BY stargazersCount DESC")
     fun getSortedLiked(): PagingSource<Int, RepositoryWithLike>
+
+    @Transaction
+    @Query("SELECT * FROM repositoryentity WHERE dateCreated > :date AND name LIKE :searchQuery ORDER BY stargazersCount DESC")
+    fun pagingSource(date: Long, searchQuery: String): PagingSource<Int, RepositoryWithLike>
 
     @Transaction
     @Query("SELECT * FROM repositoryentity WHERE dateCreated > :date ORDER BY stargazersCount DESC")

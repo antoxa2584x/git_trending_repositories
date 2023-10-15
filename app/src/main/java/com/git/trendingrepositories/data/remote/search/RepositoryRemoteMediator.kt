@@ -6,7 +6,6 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.git.trendingrepositories.data.local.RepositoriesDatabase
-import com.git.trendingrepositories.data.local.model.RepositoryEntity
 import com.git.trendingrepositories.data.local.model.RepositoryWithLike
 import com.git.trendingrepositories.data.mappers.toRepositoryEntity
 import com.git.trendingrepositories.domain.model.enums.ResultsOrder
@@ -22,7 +21,8 @@ class RepositoryRemoteMediator(
     private val searchService: SearchService,
     private val searchCondition: SortPeriod,
     private val sortOrder: SortOrder,
-    private val resultsOrder: ResultsOrder
+    private val resultsOrder: ResultsOrder,
+    private val searchQuery: String
 ) : RemoteMediator<Int, RepositoryWithLike>() {
 
     private var page = 1
@@ -43,12 +43,19 @@ class RepositoryRemoteMediator(
                 }
             }
 
-            val searchResponse = searchService.getSearchRepositories(
-                search = "created:>${searchCondition.toLocalDateString()}",
+            val request = searchService.getSearchRepositories(
+                search = "${if (searchQuery.isNotEmpty()) "$searchQuery+" else ""}created:>${searchCondition.toLocalDateString()}",
                 page = loadKey,
                 sort = resultsOrder.value,
                 order = sortOrder.value
-            ).body()
+            )
+
+            val code = request.code()
+            val searchResponse = request.body()
+
+            if (code == 403) {
+                return MediatorResult.Error(Exception())
+            }
 
             repositoriesDatabase.withTransaction {
                 val entities = searchResponse?.items?.map { it.toRepositoryEntity() }
@@ -56,7 +63,7 @@ class RepositoryRemoteMediator(
             }
 
             MediatorResult.Success(
-                endOfPaginationReached = searchResponse?.incompleteResults == true,
+                endOfPaginationReached = code == 422,
             )
         } catch (e: IOException) {
             MediatorResult.Error(e)

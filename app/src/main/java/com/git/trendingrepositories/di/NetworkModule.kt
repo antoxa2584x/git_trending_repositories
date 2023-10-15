@@ -53,7 +53,7 @@ class NetworkModule {
                 val request: Request =
                     chain.request().newBuilder().addHeader(
                         "Authorization",
-                        "Bearer USE_YOUR_OWN_API_KEY"
+                        "Bearer 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"
                     ).build()
                 chain.proceed(request)
             })

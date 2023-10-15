@@ -9,6 +9,7 @@ import com.git.trendingrepositories.domain.model.enums.SortPeriod
 interface ISearchRepository {
     fun getLocalSearchResult(
         searchCondition: SortPeriod,
+        searchQuery: String,
         sortOrder: SortOrder,
         resultsOrder: ResultsOrder
     ): Pager<Int, RepositoryWithLike>

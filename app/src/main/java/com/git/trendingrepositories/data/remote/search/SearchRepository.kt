@@ -20,6 +20,7 @@ class SearchRepository @Inject constructor(
     @OptIn(ExperimentalPagingApi::class)
     override fun getLocalSearchResult(
         searchCondition: SortPeriod,
+        searchQuery: String,
         sortOrder: SortOrder,
         resultsOrder: ResultsOrder
     ): Pager<Int, RepositoryWithLike> {
@@ -29,11 +30,15 @@ class SearchRepository @Inject constructor(
                 repositoriesDatabase = database,
                 searchService = service,
                 searchCondition = searchCondition,
+                searchQuery = searchQuery,
                 sortOrder = sortOrder,
                 resultsOrder = resultsOrder
             ),
             pagingSourceFactory = {
-                database.dao.pagingSource(searchCondition.toLocalDateLong())
+                if (searchQuery.isNotEmpty())
+                    database.dao.pagingSource(searchCondition.toLocalDateLong(), "%$searchQuery%")
+                else
+                    database.dao.pagingSource(searchCondition.toLocalDateLong())
             }
         )
     }

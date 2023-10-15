@@ -10,4 +10,6 @@
     <string name="forks">Forks</string>
     <string name="retry">Retry</string>
     <string name="load_error">Load error</string>
+    <string name="empty_results">Empty results</string>
+    <string name="search">Search..</string>
 </resources>

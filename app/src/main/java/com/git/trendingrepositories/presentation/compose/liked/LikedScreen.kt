@@ -1,14 +1,8 @@
 package com.git.trendingrepositories.presentation.compose.liked
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
@@ -25,17 +19,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.git.trendingrepositories.R
 import com.git.trendingrepositories.domain.model.search.Repository
 import com.git.trendingrepositories.presentation.compose.liked.viewmodel.LikeScreenState
 import com.git.trendingrepositories.presentation.compose.liked.viewmodel.LikeScreenViewModel
-import com.git.trendingrepositories.presentation.compose.utils.RepositoryItem
+import com.git.trendingrepositories.presentation.compose.utils.SearchScreenContent
 
 
 @Composable
@@ -91,39 +83,14 @@ private fun LikedScreen(
                         Text(text = "No saved repositories yet", Modifier.align(Alignment.Center))
                     }
 
-                    else -> LikeScreenContent(data, onReposClick)
+                    else ->
+                        SearchScreenContent(
+                            searchData = data,
+                            onReposClick = onReposClick,
+                            isRemoteContent = false
+                        )
                 }
             }
         },
     )
-}
-
-@Composable
-fun LikeScreenContent(
-    data: LazyPagingItems<Repository>,
-    onReposClick: (repo: Repository) -> Unit
-) {
-    val listState = rememberLazyListState()
-
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
-        state = listState,
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-    ) {
-        items(count = data.itemCount, key = { index ->
-            val repository = data[index]
-            "${repository?.id}${index}"
-        }) { index ->
-            val repository = data[index]
-
-            repository?.let {
-                RepositoryItem(repo = it) {
-                    onReposClick(repository)
-                }
-            }
-        }
-    }
 }
