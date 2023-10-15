@@ -37,6 +37,7 @@ import kotlinx.coroutines.delay
 fun SearchScreenContent(
     searchData: LazyPagingItems<Repository>,
     isRemoteContent: Boolean = true,
+    emptyDataText: String = stringResource(R.string.empty_results),
     onReposClick: (repo: Repository) -> Unit
 ) {
     val isLoading = searchData.loadState.refresh is LoadState.Loading
@@ -90,7 +91,7 @@ fun SearchScreenContent(
                         modifier = Modifier
                             .align(Alignment.TopCenter)
                             .padding(top = 24.dp),
-                        text = stringResource(R.string.empty_results)
+                        text = emptyDataText
                     )
             }
 

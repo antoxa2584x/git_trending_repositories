@@ -3,7 +3,6 @@ package com.git.trendingrepositories.domain.usecase.search
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import androidx.paging.PagingSource
 import com.git.trendingrepositories.data.local.RepositoriesDatabase
 import com.git.trendingrepositories.data.local.model.LikedEntity
 import com.git.trendingrepositories.data.local.model.RepositoryWithLike
@@ -16,9 +15,12 @@ class GetLikedUseCase @Inject constructor(private val database: RepositoriesData
         return database.dao.isLiked(repository.id)
     }
 
-    fun getLiked(): Flow<PagingData<RepositoryWithLike>> {
-       return Pager(PagingConfig(5), null) {
-            database.dao.getSortedLiked()
+    fun getLiked(query: String): Flow<PagingData<RepositoryWithLike>> {
+        return Pager(PagingConfig(5), null) {
+            if (query.isEmpty())
+                database.dao.getSortedLiked()
+            else
+                database.dao.getSortedLiked("%$query%")
         }.flow
     }
 }

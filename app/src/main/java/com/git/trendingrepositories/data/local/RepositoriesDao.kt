@@ -32,6 +32,10 @@ interface RepositoriesDao {
     fun getSortedLiked(): PagingSource<Int, RepositoryWithLike>
 
     @Transaction
+    @Query("SELECT * FROM likedentity JOIN repositoryentity ON id = repositoryId WHERE isLiked = 1 AND name LIKE :searchQuery ORDER BY stargazersCount DESC")
+    fun getSortedLiked(searchQuery: String): PagingSource<Int, RepositoryWithLike>
+
+    @Transaction
     @Query("SELECT * FROM repositoryentity WHERE dateCreated > :date AND name LIKE :searchQuery ORDER BY stargazersCount DESC")
     fun pagingSource(date: Long, searchQuery: String): PagingSource<Int, RepositoryWithLike>
 
